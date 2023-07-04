@@ -1,10 +1,13 @@
 const Tour = require('./../models/tourModel');
+const User = require('./../models/userModel');
 const APIFeatures = require('./../utils/apiFeatures');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 const factory = require('./handlerFactory');
 const multer = require('multer');
 const sharp = require('sharp');
+
+
 
 const multerStorage = multer.memoryStorage();
 
@@ -27,7 +30,7 @@ exports.uploadTourImages = upload.fields([
 ]);
 
 exports.resizeTourImages = catchAsync(async (req, res, next) => {
-  if (!req.files.imageCover || !req.files.images) return next();
+  if (!req.files || !req.files.imageCover || !req.files.images) return next();
 
   // 1) Cover image
   const imageCoverFileName = `tour-${req.params.id}-${Date.now()}-cover.jpeg`;
@@ -60,96 +63,37 @@ exports.resizeTourImages = catchAsync(async (req, res, next) => {
   next();
 });
 
-exports.aliasTopTours = (req, res, next) => {
-  req.query.limit = '5';
-  req.query.sort = '-ratingsAverage,price';
-  req.query.fields =
-    'name,price,ratingsAverage,summary,difficulty,durationWeeks';
-  next();
-};
+exports.createTour = catchAsync(async (req, res, next) => {
+  req.body.host = req.user.id;
 
-exports.getAllTours = factory.getAll(Tour);
-exports.getTour = factory.getOne(Tour, { path: 'reviews' });
-exports.createTour = factory.createOne(Tour);
-exports.updateTour = factory.updateOne(Tour);
-exports.deleteTour = factory.deleteOne(Tour);
+  const tour = await Tour.create(req.body);
 
-exports.getTourStats = catchAsync(async (req, res, next) => {
-  const stats = await Tour.aggregate([
-    {
-      $match: { ratingsAverage: { $gte: 4.5 } },
-    },
-    {
-      $group: {
-        _id: { $toUpper: '$difficulty' },
-        numTours: { $sum: 1 },
-        numRatings: { $sum: '$ratingsQuantity' },
-        avgRating: { $avg: '$ratingsAverage' },
-        avgPrice: { $avg: '$price' },
-        minPrice: { $min: '$price' },
-        maxPrice: { $max: '$price' },
-      },
-    },
-    {
-      $sort: { avgPrice: 1 },
-    },
-    // {
-    //   $match: { _id: { $ne: 'EASY' } }
-    // }
-  ]);
-
-  res.status(200).json({
+  res.status(201).json({
     status: 'success',
     data: {
-      stats,
+      data: tour,
     },
   });
 });
 
-exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
-  const year = req.params.year * 1; // 2021
+exports.isHostPostedTour = catchAsync(async (req, res, next) => {
+  if (req.user.role === 'admin') {
+    return next();
+  }
 
-  const plan = await Tour.aggregate([
-    {
-      $unwind: '$startDates',
-    },
-    {
-      $match: {
-        startDates: {
-          $gte: new Date(`${year}-01-01`),
-          $lte: new Date(`${year}-12-31`),
-        },
-      },
-    },
-    {
-      $group: {
-        _id: { $month: '$startDates' },
-        numTourStarts: { $sum: 1 },
-        tours: { $push: '$name' },
-      },
-    },
-    {
-      $addFields: { month: '$_id' },
-    },
-    {
-      $project: {
-        _id: 0,
-      },
-    },
-    {
-      $sort: { numTourStarts: -1 },
-    },
-    {
-      $limit: 12,
-    },
-  ]);
+  try {
+    const tour = await Tour.findById(req.params.id);
 
-  res.status(200).json({
-    status: 'success',
-    data: {
-      plan,
-    },
-  });
+    if (req.user.id != tour.host._id) {
+      return next(
+        new AppError('You do not have permission to perform this action', 403)
+      );
+    }
+  } catch (err) {
+    return next(new AppError('Error finding tour', 500));
+  }
+
+  next();
 });
 
 // /tours-within/:distance/center/:latlng/unit/:unit
@@ -174,7 +118,7 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
   // });
 
   const query = Tour.find({
-    startLocation: { $geoWithin: { $centerSphere: [[lng, lat], radius] } },
+    location: { $geoWithin: { $centerSphere: [[lng, lat], radius] } },
   });
 
   // Create a new instance of APIFeatures
@@ -195,44 +139,26 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getDistances = catchAsync(async (req, res, next) => {
-  const { latlng, unit } = req.params;
-  const [lat, lng] = latlng.split(',');
 
-  const multiplier = unit === 'mi' ? 0.000621371 : 0.001;
 
-  if (!lat || !lng) {
-    next(
-      new AppError(
-        'Please provide latitutr and longitude in the format lat,lng.',
-        400
-      )
-    );
-  }
+exports.getAllToursForHost = catchAsync(async (req, res, next) => {
+  const hostId = req.params.hostId;
 
-  const distances = await Tour.aggregate([
-    {
-      $geoNear: {
-        near: {
-          type: 'Point',
-          coordinates: [lng * 1, lat * 1],
-        },
-        distanceField: 'distance',
-        distanceMultiplier: multiplier,
-      },
-    },
-    {
-      $project: {
-        distance: 1,
-        name: 1,
-      },
-    },
-  ]);
+  const hostInfo = await User.findById(hostId);
+  const tours = await Tour.find({ host: hostId });
 
   res.status(200).json({
     status: 'success',
+    results:tours.length,
     data: {
-      data: distances,
+      hostInfo,
+      tours,
     },
   });
 });
+
+
+exports.getAllTours = factory.getAll(Tour);
+exports.getTour = factory.getOne(Tour, { path: 'reviews' });
+exports.updateTour = factory.updateOne(Tour);
+exports.deleteTour = factory.deleteOne(Tour);

@@ -11,6 +11,11 @@ const bookingSchema = new mongoose.Schema({
     ref: 'User',
     required: [true, 'Booking must belong to a User!'],
   },
+  host: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'User',
+    require: [true, 'A Booking tour must have a Host.'],
+  },
   price: {
     type: Number,
     require: [true, 'Booking must have a price.'],
@@ -32,6 +37,12 @@ const bookingSchema = new mongoose.Schema({
     required: [true, 'Participated status is mandatory for point allocation'],
     default: false,
   },
+  status: {
+    type: String,
+    enum: ['pending', 'confirmed', 'cancelled', 'cancelled by host'],
+    default: 'confirmed',
+  },
+
   scubaDivingInfo: {
     duration: {
       type: Number,
@@ -92,7 +103,7 @@ const bookingSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-   pointsUpdated: {
+  pointsUpdated: {
     type: Boolean,
     default: false,
   },
