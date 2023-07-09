@@ -11,11 +11,19 @@ const cors = require('cors');
 
 const globalErrorHandler = require('./controllers/errorController');
 const AppError = require('./utils/appError');
-const userRouter = require('./routes/userRoutes');
-const tourRouter = require('./routes/tourRoutes');
-const reviewRouter = require('./routes/reviewRoutes');
-const viewRouter = require('./routes/viewRoutes');
-const bookingRouter = require('./routes/bookingRoutes');
+
+const adminTourRouter = require('./routes/admin/adminTourRoutes');
+const adminReviewRouter = require('./routes/admin/adminReviewRoutes');
+const adminBookingRouter = require('./routes/admin/adminBookingRoutes');
+const adminUserRouter = require('./routes/admin/adminUserRoutes');
+
+const hostTourRoutes = require('./routes/host/hostTourRoutes');
+const hostBookingRoutes = require('./routes/host/hostBookingRoutes');
+
+const userRouter = require('./routes/user/userRoutes');
+const userTourRoutes = require('./routes/user/userTourRoutes');
+const userReviewRoutes = require('./routes/user/userReviewRoutes');
+const userBookingRoutes = require('./routes/user/userBookingRoutes');
 
 const app = express();
 app.use(express.json());
@@ -28,7 +36,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //app.use(cors());
 app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
-app.options('*', cors())
+app.options('*', cors());
 
 // 1) GLOBAL MIDDLEWARES
 // Set security HTTP headers
@@ -80,11 +88,18 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/', viewRouter);
-app.use('/api/v1/tours', tourRouter);
-app.use('/api/v1/users', userRouter);
-app.use('/api/v1/reviews', reviewRouter);
-app.use('/api/v1/bookings', bookingRouter);
+app.use('/api/v1/admin/tours', adminTourRouter);
+app.use('/api/v1/admin/reviews', adminReviewRouter);
+app.use('/api/v1/admin/bookings', adminBookingRouter);
+app.use('/api/v1/admin/users', adminUserRouter);
+
+app.use('/api/v1/host/tours', hostTourRoutes);
+app.use('/api/v1/host/bookings', hostBookingRoutes);
+
+app.use('/api/v1/tours', userTourRoutes);
+app.use('/api/v1/reviews', userReviewRoutes);
+app.use('/api/v1/bookings', userBookingRoutes);
+app.use('/api/v1/user', userRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));

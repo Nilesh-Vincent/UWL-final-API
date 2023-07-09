@@ -21,12 +21,38 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['user', 'guide', 'lead-guide', 'admin'],
+    enum: ['user', 'host', 'admin'],
     default: 'user',
   },
   points: {
     type: Number,
     default: 0,
+  },
+  activityPoints: {
+    scubaDivingPoints: {
+      type: Number,
+      default: 0,
+    },
+    paraglidingPoints: {
+      type: Number,
+      default: 0,
+    },
+    whiteWaterRaftingPoints: {
+      type: Number,
+      default: 0,
+    },
+    rockClimbingPoints: {
+      type: Number,
+      default: 0,
+    },
+    trekkingPoints: {
+      type: Number,
+      default: 0,
+    },
+    wildlifeSafariPoints: {
+      type: Number,
+      default: 0,
+    },
   },
   password: {
     type: String,
@@ -53,6 +79,15 @@ const userSchema = new mongoose.Schema({
     default: true,
     select: false,
   },
+});
+
+userSchema.pre('save', function (next) {
+  if (this.user !== 'user') {
+    this.activityPoints = undefined;
+    this.points = undefined;
+  }
+
+  next();
 });
 
 userSchema.pre('save', async function (next) {

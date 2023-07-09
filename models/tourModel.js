@@ -89,14 +89,26 @@ const tourSchema = new mongoose.Schema(
       address: String,
       description: String,
     },
-      host: {
+    host: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
     categoryType: {
       type: String,
       required: [true, 'A tour must have a category'],
-      enum: ['paragliding', 'scuba diving'],
+      enum: [
+        'paragliding',
+        'scuba diving',
+        'trekking',
+        'rock climbing',
+        'wildlife safari',
+        'white water rafting',
+      ],
+    },
+    adventureType: {
+      type: String,
+      required: [true, 'A tour must have a adventure type'],
+      enum: ['soft adventure', 'hard adventure '],
     },
   },
   {
