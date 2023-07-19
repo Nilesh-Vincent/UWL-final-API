@@ -115,21 +115,19 @@ exports.updateScubaDivingByHost = catchAsync(async (req, res, next) => {
     {
       $inc: {
         points: pointsOutOf10,
+        'activityPoints.scubaDivingPoints': pointsOutOf10,
       },
-      $inc: {
-        'activityPoints.paraglidingPoints': pointsOutOf10,
-      },
-    },
-
-    {
-      new: true, // Return the updated user document
-      runValidators: true, // Run validators on the update operation
     }
+    // {
+    //   new: true, // Return the updated user document
+    //   runValidators: true, // Run validators on the update operation
+    // }
   );
 
   // Set the 'participated' field to true and the points updated field to true
   booking.participated = true;
   booking.pointsUpdated = true;
+  booking.status = 'confirmed';
 
   // Save the updated booking document
   const updatedBooking = await booking.save();
@@ -281,8 +279,6 @@ exports.updateparaglidingByHost = catchAsync(async (req, res, next) => {
     {
       $inc: {
         points: pointsOutOf10,
-      },
-      $inc: {
         'activityPoints.paraglidingPoints': pointsOutOf10,
       },
     },
@@ -296,6 +292,7 @@ exports.updateparaglidingByHost = catchAsync(async (req, res, next) => {
   // Set the 'participated' field to true and the points updated field to true
   booking.participated = true;
   booking.pointsUpdated = true;
+  booking.status = 'confirmed';
 
   // Save the updated booking document
   const updatedBooking = await booking.save();
@@ -385,10 +382,10 @@ exports.updateWhiteWaterRaftingByHost = catchAsync(async (req, res, next) => {
     points += 2;
   } else if (
     whiteWaterRaftingInfo.duration > 1.3 &&
-    whiteWaterRaftingInfo.duration <= 4
+    whiteWaterRaftingInfo.duration <= 3
   ) {
     points += 4;
-  } else if (whiteWaterRaftingInfo.duration > 4) {
+  } else if (whiteWaterRaftingInfo.duration > 3) {
     points += 6;
   }
 
@@ -443,8 +440,6 @@ exports.updateWhiteWaterRaftingByHost = catchAsync(async (req, res, next) => {
     {
       $inc: {
         points: pointsOutOf10,
-      },
-      $inc: {
         'activityPoints.whiteWaterRaftingPoints': pointsOutOf10,
       },
     },
@@ -458,6 +453,7 @@ exports.updateWhiteWaterRaftingByHost = catchAsync(async (req, res, next) => {
   // Set the 'participated' field to true and the points updated field to true
   booking.participated = true;
   booking.pointsUpdated = true;
+  booking.status = 'confirmed';
 
   // Save the updated booking document
   const updatedBooking = await booking.save();
@@ -514,14 +510,14 @@ exports.updateRockClimbingInfoByHost = catchAsync(async (req, res, next) => {
   let points = 0;
 
   // Calculate points based on duration
-  if (rockClimbingInfo.duration >= 0.3 && rockClimbingInfo.duration <= 1.3) {
+  if (rockClimbingInfo.duration >= 0.3 && rockClimbingInfo.duration <= 1.0) {
     points += 2;
   } else if (
     rockClimbingInfo.duration > 1.3 &&
-    rockClimbingInfo.duration <= 4
+    rockClimbingInfo.duration <= 2.3
   ) {
     points += 4;
-  } else if (rockClimbingInfo.duration > 4) {
+  } else if (rockClimbingInfo.duration > 2.3) {
     points += 6;
   }
 
@@ -588,8 +584,6 @@ exports.updateRockClimbingInfoByHost = catchAsync(async (req, res, next) => {
     {
       $inc: {
         points: pointsOutOf10,
-      },
-      $inc: {
         'activityPoints.rockClimbingPoints': pointsOutOf10,
       },
     },
@@ -603,6 +597,7 @@ exports.updateRockClimbingInfoByHost = catchAsync(async (req, res, next) => {
   // Set the 'participated' field to true and the points updated field to true
   booking.participated = true;
   booking.pointsUpdated = true;
+  booking.status = 'confirmed';
 
   // Save the updated booking document
   const updatedBooking = await booking.save();
@@ -661,9 +656,9 @@ exports.updateTrekkingInfoByHost = catchAsync(async (req, res, next) => {
   // Calculate points based on duration
   if (trekkingInfo.duration >= 0.3 && trekkingInfo.duration <= 1.3) {
     points += 1;
-  } else if (trekkingInfo.duration > 1.3 && trekkingInfo.duration <= 2) {
+  } else if (trekkingInfo.duration > 1.3 && trekkingInfo.duration <= 2.3) {
     points += 2;
-  } else if (trekkingInfo.duration > 2) {
+  } else if (trekkingInfo.duration > 2.3) {
     points += 3;
   }
 
@@ -724,8 +719,6 @@ exports.updateTrekkingInfoByHost = catchAsync(async (req, res, next) => {
     {
       $inc: {
         points: pointsOutOf10,
-      },
-      $inc: {
         'activityPoints.trekkingPoints': pointsOutOf10,
       },
     },
@@ -739,6 +732,7 @@ exports.updateTrekkingInfoByHost = catchAsync(async (req, res, next) => {
   // Set the 'participated' field to true and the points updated field to true
   booking.participated = true;
   booking.pointsUpdated = true;
+  booking.status = 'confirmed';
 
   // Save the updated booking document
   const updatedBooking = await booking.save();
@@ -816,10 +810,10 @@ exports.updatewildlifeSafariInfoByHost = catchAsync(async (req, res, next) => {
     points += 1;
   } else if (
     wildlifeSafariInfo.duration > 1.3 &&
-    wildlifeSafariInfo.duration <= 2
+    wildlifeSafariInfo.duration <= 2.3
   ) {
     points += 2;
-  } else if (wildlifeSafariInfo.duration > 2) {
+  } else if (wildlifeSafariInfo.duration > 2.3) {
     points += 3;
   }
 
@@ -874,8 +868,6 @@ exports.updatewildlifeSafariInfoByHost = catchAsync(async (req, res, next) => {
     {
       $inc: {
         points: pointsOutOf10,
-      },
-      $inc: {
         'activityPoints.wildlifeSafariPoints': pointsOutOf10,
       },
     },
@@ -889,6 +881,7 @@ exports.updatewildlifeSafariInfoByHost = catchAsync(async (req, res, next) => {
   // Set the 'participated' field to true and the points updated field to true
   booking.participated = true;
   booking.pointsUpdated = true;
+  booking.status = 'confirmed';
 
   // Save the updated booking document
   const updatedBooking = await booking.save();

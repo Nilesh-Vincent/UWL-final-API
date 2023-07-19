@@ -31,7 +31,7 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
       {
         name: `${tour.name} Tour`,
         description: tour.summary,
-        images: [`https://www.natours.dev/img/tours/${tour.imageCover}`],
+        images: [`https://localhost:5000/img/tours/${tour.imageCover}`],
         amount: tour.price * 100,
         currency: 'usd',
         quantity: 1,
@@ -58,7 +58,7 @@ exports.createBookingCheckout = catchAsync(async (req, res, next) => {
 
   await Booking.create({ tour, user, price, categoryType, host });
 
-  const success = 'http://localhost:5173/success';
+  const success = 'http://localhost:5173/my-bookings';
 
   res.redirect(success);
 });

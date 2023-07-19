@@ -24,36 +24,49 @@ const userSchema = new mongoose.Schema({
     enum: ['user', 'host', 'admin'],
     default: 'user',
   },
+    bio: {
+    type: String,
+    default: 'Enter your bio here',
+    maxlength: [250, 'Bio cannot exceed 250 characters'],
+  },
   points: {
     type: Number,
     default: 0,
+    required: true,
   },
   activityPoints: {
-    scubaDivingPoints: {
-      type: Number,
-      default: 0,
-    },
-    paraglidingPoints: {
-      type: Number,
-      default: 0,
-    },
-    whiteWaterRaftingPoints: {
-      type: Number,
-      default: 0,
-    },
-    rockClimbingPoints: {
-      type: Number,
-      default: 0,
-    },
-    trekkingPoints: {
-      type: Number,
-      default: 0,
-    },
-    wildlifeSafariPoints: {
-      type: Number,
-      default: 0,
-    },
+  scubaDivingPoints: {
+    type: Number,
+    default: 0,
+    required: true,
   },
+  paraglidingPoints: {
+    type: Number,
+    default: 0,
+    required: true,
+  },
+  whiteWaterRaftingPoints: {
+    type: Number,
+    default: 0,
+    required: true,
+  },
+  rockClimbingPoints: {
+    type: Number,
+    default: 0,
+    required: true,
+  },
+  trekkingPoints: {
+    type: Number,
+    default: 0,
+    required: true,
+  },
+  wildlifeSafariPoints: {
+    type: Number,
+    default: 0,
+    required: true,
+  },
+},
+
   password: {
     type: String,
     required: [true, 'Please provide a password'],

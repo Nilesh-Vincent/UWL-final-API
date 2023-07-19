@@ -5,7 +5,7 @@ const User = require('./../models/userModel');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 const Email = require('./../utils/email');
-const Tour = require("./../models/tourModel")
+const Tour = require('./../models/tourModel');
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -72,7 +72,7 @@ exports.login = catchAsync(async (req, res, next) => {
 exports.logout = (req, res) => {
   res.cookie('jwt', 'loggedout', {
     expires: new Date(Date.now() + 10 * 1000),
-    httpOnly: true,
+    httpOnly: false,
   });
   res.status(200).json({ status: 'success' });
 };
@@ -162,8 +162,6 @@ exports.restrictTo = (...roles) => {
     next();
   };
 };
-
-
 
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   // 1) Get user based on POSTed email

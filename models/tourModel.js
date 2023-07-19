@@ -17,10 +17,6 @@ const tourSchema = new mongoose.Schema(
       type: Number,
       required: [true, 'A tour must have a duration'],
     },
-    maxGroupSize: {
-      type: Number,
-      required: [true, 'A tour must have a group size'],
-    },
     difficulty: {
       type: String,
       required: [true, 'A tour must have a difficulty'],
@@ -73,7 +69,6 @@ const tourSchema = new mongoose.Schema(
       default: Date.now(),
       select: false,
     },
-    startDates: [Date],
     secretTour: {
       type: Boolean,
       default: false,
@@ -108,7 +103,7 @@ const tourSchema = new mongoose.Schema(
     adventureType: {
       type: String,
       required: [true, 'A tour must have a adventure type'],
-      enum: ['soft adventure', 'hard adventure '],
+      enum: ['soft adventure', 'hard adventure'],
     },
   },
   {
@@ -117,9 +112,9 @@ const tourSchema = new mongoose.Schema(
   }
 );
 
-tourSchema.virtual('durationWeeks').get(function () {
-  return this.duration / 7;
-});
+// tourSchema.virtual('durationWeeks').get(function () {
+//   return this.duration / 7;
+// });
 
 // tourSchema.index({ price: 1 });
 tourSchema.index({ price: 1, ratingsAverage: -1 });

@@ -40,38 +40,44 @@ const bookingSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ['pending', 'confirmed', 'cancelled', 'cancelled by host'],
-    default: 'confirmed',
+    default: 'pending',
   },
 
   scubaDivingInfo: {
     duration: {
       type: Number,
       default: 0,
-      enum: [0, 0.3, 1.0, 1.3, 2.0, 2.3, 3.0, 3.3, 4.0], //if user is between 0.30 - 1.30 will get 2 point and between 2.00 - 4 will get 2 marks and above that 6 marks
+      enum: [0, 0.3, 1.0, 1.3, 2.0, 2.3, 3.0, 3.3, 4.0],
+      //if user is between 0.3Hrs - 1.3Hrs will get 2 point and between 2.0Hrs - 4.0Hrs will get 2 marks and above that 6 marks
     },
     depth: {
       type: Number,
       default: 0,
-      enum: [0, 5, 10, 15, 20, 25, 30, 35, 40], // If user going to deph between 5 - 15 will get 2 point, 20 - 35 4 points and above that will get 6 points
+      enum: [0, 5, 10, 15, 20, 25, 30, 35, 40],
+      // If user going to deph between 5m - 15m will get 2 point, 20m - 35m 4 points and above that will get 6 points
     },
     accuracyOfDescent: {
       type: String,
-      default: 'Not Specified Yet', // If user age is average will get 2 point, accurate will get 4 points and very accurate will get 6 points
+      default: 'Not Specified Yet',
       enum: ['Average', 'Accurate', 'Very accurate', 'Not Specified Yet'],
+      // If user age is average will get 2 point, accurate will get 4 points and very accurate will get 6 points
     },
     underwaterNavigation: {
       type: String,
-      default: 'Not Specified Yet', // average will get 2 point, accurate will get 4 points and very accurate will get 6 points
+      default: 'Not Specified Yet',
       enum: ['Average', 'Accurate', 'Very accurate', 'Not Specified Yet'],
+      // average will get 2 point, accurate will get 4 points and very accurate will get 6 points
     },
     marineLifeEncounters: {
       type: String,
-      default: 'Not Specified Yet', // Default value when not specified
-      enum: ['Few', 'Moderate', 'Abundant', 'Not Specified Yet'], // few will get 2 point, Moderate will get 4 points and Abundant will get 6 points
+      default: 'Not Specified Yet',
+      enum: ['Few', 'Moderate', 'Abundant', 'Not Specified Yet'],
+      // few will get 2 point, Moderate will get 4 points and Abundant will get 6 points
     },
     age: {
       type: Number,
-      default: 0, // If user age is between 18 - 30 will get 2 point, 31 - 45 will get 4 points and above that will get 6 points
+      default: 0,
+      // If user age is between 18 - 30 will get 2 point, 31 - 45 will get 4 points and above that will get 6 points
     },
   },
 
@@ -132,7 +138,7 @@ const bookingSchema = new mongoose.Schema({
     duration: {
       type: Number,
       default: 0,
-      enum: [0, 0.3, 1, 1.3, 2, 2.3, 3], //if user is between 0.30 - 1.30 will get 2 point and between 2.00 - 4 will get 2 marks and above that 6 marks
+      enum: [0, 0.3, 1, 1.3, 2, 2.3, 3, 3.3, 4, 4.3, 5], //if user is between 0.30 - 1.30 will get 2 point and between 2.00 - 4 will get 2 marks and above that 6 marks
     },
     weather: {
       type: String,
@@ -159,7 +165,7 @@ const bookingSchema = new mongoose.Schema({
     duration: {
       type: Number,
       default: 0,
-      enum: [0, 0.3, 1, 1.3, 2, 2.3, 3], //if user is between 0.30 - 1.30 will get 2 point and between 2.00 - 4 will get 2 marks and above that 6 marks
+      enum: [0, 0.3, 1, 1.3, 2, 2.3, 3, 3.3], //if user is between 0.30 - 1.30 will get 2 point and between 2.00 - 4 will get 2 marks and above that 6 marks
     },
     accuracyOfClimbing: {
       type: String,
@@ -192,7 +198,7 @@ const bookingSchema = new mongoose.Schema({
     duration: {
       type: Number,
       default: 0,
-      enum: [0, 0.3, 1, 1.3, 2, 2.3, 3], //if user is between 0.30 - 1.30 will get 1 point and between 2.00 - 2 will get 2 marks and above that 3 marks
+      enum: [0, 0.3, 1, 1.3, 2, 2.3, 3, 3.3], //if user is between 0.30 - 1.30 will get 1 point and between 2.00 - 2 will get 2 marks and above that 3 marks
     },
     distance: {
       type: Number,
@@ -226,7 +232,7 @@ const bookingSchema = new mongoose.Schema({
     duration: {
       type: Number,
       default: 0,
-      enum: [0, 0.3, 1, 1.3, 2, 2.3, 3], //if user is between 0.30 - 1.30 will get 1 point and between 2.00 - 2 will get 2 marks and above that 3 marks
+      enum: [0, 0.3, 1, 1.3, 2, 2.3, 3, 3.3], //if user is between 0.30 - 1.30 will get 1 point and between 2.00 - 2 will get 2 marks and above that 3 marks
     },
     photographyOpportunities: {
       type: Number,
@@ -284,7 +290,7 @@ bookingSchema.pre('save', function (next) {
 bookingSchema.pre(/^find/, function (next) {
   this.populate('user').populate({
     path: 'tour',
-    select: 'name',
+    select: 'name imageCover',
   });
   next();
 });

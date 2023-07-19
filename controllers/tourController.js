@@ -142,16 +142,16 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
 
 
 exports.getAllToursForHost = catchAsync(async (req, res, next) => {
-  const hostId = req.params.hostId;
+  const hostId = req.user._id;
 
-  const hostInfo = await User.findById(hostId);
+  console.log(req.user._id)
+
   const tours = await Tour.find({ host: hostId });
 
   res.status(200).json({
     status: 'success',
     results:tours.length,
     data: {
-      hostInfo,
       tours,
     },
   });
