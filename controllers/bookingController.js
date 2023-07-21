@@ -24,7 +24,7 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
 
     success_url: `${req.protocol}://${req.get('host')}/api/v1/bookings/complete-booking/?tour=${req.params.tourId}&user=${req.user.id}&price=${tour.price}&categoryType=${tour.categoryType}&host=${tour.host._id}`,
 
-    cancel_url: `http://localhost:5173/cancel`,
+    cancel_url: `https://uwl-final-frontend.vercel.app/adventure/${req.params.tourId}`,
     customer_email: req.user.email,
     client_reference_id: req.params.tourId,
     line_items: [
@@ -58,7 +58,7 @@ exports.createBookingCheckout = catchAsync(async (req, res, next) => {
 
   await Booking.create({ tour, user, price, categoryType, host });
 
-  const success = 'http://localhost:5173/my-bookings';
+  const success = 'https://uwl-final-frontend.vercel.app/my-bookings';
 
   res.redirect(success);
 });
