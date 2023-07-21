@@ -4,18 +4,18 @@ const authController = require('../../controllers/authController');
 
 const router = express.Router();
 
-//ADMIN ROUTES
-
+// Protect and restrict access to all routes for admin
 router.use(authController.protect);
+router.use(authController.restrictTo('admin'));
 
 router
   .route('/')
-  .get(authController.restrictTo('admin'), bookingController.getAllBookings);
+  .get(bookingController.getAllBookings);
 
 router
   .route('/:id')
-  .get(authController.restrictTo('admin'), bookingController.getBooking)
-  .patch(authController.restrictTo('admin'), bookingController.updateBooking)
-  .delete(authController.restrictTo('admin'), bookingController.deleteBooking);
+  .get(bookingController.getBooking)
+  .patch(bookingController.updateBooking)
+  .delete(bookingController.deleteBooking);
 
 module.exports = router;

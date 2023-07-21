@@ -290,7 +290,7 @@ bookingSchema.pre('save', function (next) {
 bookingSchema.pre(/^find/, function (next) {
   this.populate('user').populate({
     path: 'tour',
-    select: 'name imageCover',
+    select: 'name imageCover location',
   });
   next();
 });

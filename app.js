@@ -35,10 +35,13 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 //app.use(cors());
-app.use(cors({ origin: 'http://localhost:5173',  credentials: true }));
+app.use(
+  cors({
+    origin: ['http://localhost:5173', 'http://localhost:5174'],
+    credentials: true,
+  })
+);
 app.options('*', cors());
-
-
 
 // 1) GLOBAL MIDDLEWARES
 // Set security HTTP headers
@@ -51,7 +54,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // Limit requests from same API
 const limiter = rateLimit({
-  max: 100,
+  max: 1000,
   windowMs: 60 * 60 * 1000,
   message: 'Too many requests from this IP, please try again in an hour!',
 });

@@ -143,7 +143,9 @@ exports.getAllBookingsByHost = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getBookingByHost = catchAsync(async (req, res) => {
+
+
+exports.getBookingByHost = catchAsync(async (req, res, next) => {
   const booking = await Booking.findOne({
     host: req.user.id,
     _id: req.params.bookingId,
@@ -160,6 +162,7 @@ exports.getBookingByHost = catchAsync(async (req, res) => {
     },
   });
 });
+
 
 exports.cancelBookingByHost = catchAsync(async (req, res, next) => {
   const booking = await Booking.findById(req.params.bookingId);

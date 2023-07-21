@@ -158,6 +158,21 @@ exports.getAllToursForHost = catchAsync(async (req, res, next) => {
 });
 
 
+exports.getAllToursByHost = catchAsync(async (req, res, next) => {
+  const hostId = req.params.hostId;
+
+  const tours = await Tour.find({ host: hostId });
+
+  res.status(200).json({
+    status: 'success',
+    results:tours.length,
+    data: {
+      tours,
+    },
+  });
+});
+
+
 exports.getAllTours = factory.getAll(Tour);
 exports.getTour = factory.getOne(Tour, { path: 'reviews' });
 exports.updateTour = factory.updateOne(Tour);

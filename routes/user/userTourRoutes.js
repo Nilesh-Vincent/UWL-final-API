@@ -8,7 +8,7 @@ router.use('/:tourId/reviews', reviewUserRoutes);
 
 router.route('/').get(tourController.getAllTours);
 
-router.get('/host/:hostId', tourController.getAllToursForHost);
+router.get('/host/:hostId', tourController.getAllToursByHost);
 
 // /tours-within?distance=233&center=-40,45&unit=mi
 // /tours-within/233/center/-40,45/unit/mi
